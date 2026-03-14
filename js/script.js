@@ -27,7 +27,7 @@ const canvas = document.getElementById("renderCanvas");
 
         light.intensity = 0.7;
 
-        // ground
+        // MeshBuilder to create ground
         const ground = BABYLON.MeshBuilder.CreateGround(
         "ground",
         {width:20,
@@ -38,6 +38,40 @@ const canvas = document.getElementById("renderCanvas");
         const groundMat = new BABYLON.StandardMaterial("groundMat",scene);
         groundMat.diffuseColor = new BABYLON.Color3(0.6,0.6,0.6);
         ground.material = groundMat;
+
+        // MeshBuilder to create walls
+        const wall1 = BABYLON.MeshBuilder.CreateBox(
+        "wall1",
+        {width:20,
+        height:5,
+        depth:0.5},
+        scene
+        );
+
+        wall1.position.z = -10;
+        wall1.position.y = 2;
+
+        const wall2 = BABYLON.MeshBuilder.CreateBox(
+        "wall2",
+        {width:0.5,
+        height:5,
+        depth:20},
+        scene
+        );
+
+        wall2.position.x = -10;
+        wall2.position.y = 2;
+
+        const wall3 = BABYLON.MeshBuilder.CreateBox(
+        "wall3",
+        {width:0.5,
+        height:5,
+        depth:20},
+        scene
+        );
+
+        wall3.position.x = 10;
+        wall3.position.y = 2;
 
 return scene;
 };

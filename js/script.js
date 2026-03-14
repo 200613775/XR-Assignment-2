@@ -49,7 +49,7 @@ const canvas = document.getElementById("renderCanvas");
         );
 
         wall1.position.z = -10;
-        wall1.position.y = 2;
+        wall1.position.y = 2.5;
 
         const wall2 = BABYLON.MeshBuilder.CreateBox(
         "wall2",
@@ -60,7 +60,7 @@ const canvas = document.getElementById("renderCanvas");
         );
 
         wall2.position.x = -10;
-        wall2.position.y = 2;
+        wall2.position.y = 2.5;
 
         const wall3 = BABYLON.MeshBuilder.CreateBox(
         "wall3",
@@ -71,7 +71,7 @@ const canvas = document.getElementById("renderCanvas");
         );
 
         wall3.position.x = 10;
-        wall3.position.y = 2;
+        wall3.position.y = 2.5;
 
         // MeshBuilder to add a Exit door
         const exitDoor = BABYLON.MeshBuilder.CreateBox(
@@ -82,12 +82,18 @@ const canvas = document.getElementById("renderCanvas");
         scene
         );
 
-        exitDoor.position.z = -10;
+        exitDoor.position.z = -9.75;
         exitDoor.position.y = 2;
 
         const doorMat = new BABYLON.StandardMaterial("doorMat",scene);
         doorMat.diffuseColor = new BABYLON.Color3(0.8,0.2,0.2);
         exitDoor.material = doorMat;
+
+        // XR Helper
+        const xr = await scene.createDefaultXRExperienceAsync({ 
+         floorMeshes: [ground],
+         optionalFeatures: true
+        });
 
 return scene;
 };

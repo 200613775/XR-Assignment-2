@@ -73,6 +73,22 @@ const canvas = document.getElementById("renderCanvas");
         wall3.position.x = 10;
         wall3.position.y = 2;
 
+        // MeshBuilder to add a Exit door
+        const exitDoor = BABYLON.MeshBuilder.CreateBox(
+        "exitDoor",
+        {width:3,
+        height:4,
+        depth:0.5},
+        scene
+        );
+
+        exitDoor.position.z = -10;
+        exitDoor.position.y = 2;
+
+        const doorMat = new BABYLON.StandardMaterial("doorMat",scene);
+        doorMat.diffuseColor = new BABYLON.Color3(0.8,0.2,0.2);
+        exitDoor.material = doorMat;
+
 return scene;
 };
 

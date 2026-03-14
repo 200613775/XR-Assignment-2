@@ -1,31 +1,43 @@
 // Get the element
 const canvas = document.getElementById("renderCanvas");
 
-// Create the engine
-const engine = new BABYLON.Engine(canvas, true);
+    // Create the engine
+    const engine = new BABYLON.Engine(canvas, true);
 
-// Create
-const createScene = async function () {
-const scene = new BABYLON.Scene(engine);
+        // Create
+        const createScene = async function () {
+        const scene = new BABYLON.Scene(engine);
 
-// Create a camera
-const camera = new BABYLON.ArcRotateCamera(
-"camera",
--Math.PI / 2,
-Math.PI / 2.5,
-15,
-new BABYLON.Vector3(0,0,0)
-);
-camera.attachControl(canvas,true);
+        // Create a camera
+        const camera = new BABYLON.ArcRotateCamera(
+        "camera",
+        -Math.PI / 2,
+        Math.PI / 2.5,
+        15,
+        new BABYLON.Vector3(0,0,0)
+     );
+        camera.attachControl(canvas,true);
 
-// lighting
-const light = new BABYLON.HemisphericLight(
-"light1",
-new BABYLON.Vector3(0,1,0),
-scene
-);
+        // lighting
+        const light = new BABYLON.HemisphericLight(
+        "light1",
+        new BABYLON.Vector3(0,1,0),
+        scene
+        );
 
-light.intensity = 0.7;
+        light.intensity = 0.7;
+
+        // ground
+        const ground = BABYLON.MeshBuilder.CreateGround(
+        "ground",
+        {width:20,
+        height:20},
+        scene
+        );
+
+        const groundMat = new BABYLON.StandardMaterial("groundMat",scene);
+        groundMat.diffuseColor = new BABYLON.Color3(0.6,0.6,0.6);
+        ground.material = groundMat;
 
 return scene;
 };

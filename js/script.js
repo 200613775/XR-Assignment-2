@@ -82,11 +82,12 @@ const canvas = document.getElementById("renderCanvas");
         scene
         );
 
-        exitDoor.position.z = -9.75;
+        exitDoor.position.z = -9.5;
         exitDoor.position.y = 2;
 
         const doorMat = new BABYLON.StandardMaterial("doorMat",scene);
         doorMat.diffuseColor = new BABYLON.Color3(0.8,0.2,0.2);
+        doorMat.emissiveColor = new BABYLON.Color3(1,0,0);
         exitDoor.material = doorMat;
 
         // XR Helper

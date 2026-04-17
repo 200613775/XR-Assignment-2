@@ -78,7 +78,9 @@ const createScene = async function () {
 
     // Direction arrow
     const arrow = BABYLON.MeshBuilder.CreateCylinder("arrow",
-        { diameterTop: 0, diameterBottom: 0.6, height: 2 }, scene);
+        { diameterTop: 0, 
+          diameterBottom: 0.6, 
+          height: 2 }, scene);
     arrow.rotation.z = Math.PI / 2;
     arrow.position = new BABYLON.Vector3(0, 3, -5);
 
@@ -86,8 +88,21 @@ const createScene = async function () {
     arrowMat.emissiveColor = new BABYLON.Color3(0, 1, 0);
     arrow.material = arrowMat;
 
+    const arrow = BABYLON.MeshBuilder.CreateCylinder("arrow",{
+    diameterTop:0,
+    diameterBottom:0.6,
+    height:2
+    },scene);
+
+    arrow.rotation.z = Math.PI/2;
+    arrow.position = new BABYLON.Vector3(0,3,-5);
+
+    const arrowMat = new BABYLON.StandardMaterial("arrowMat",scene);
+    arrowMat.emissiveColor = new BABYLON.Color3(0,1,0);
+    arrow.material = arrowMat;
+
     // -----------------------------
-    // STEP 5: Hazard (Fire)
+    // Hazard (Fire)
     // -----------------------------
 
     const fire = BABYLON.MeshBuilder.CreateSphere("fire",
@@ -138,19 +153,19 @@ const createScene = async function () {
             let time = ((Date.now() - startTime) / 1000).toFixed(2);
 
             document.getElementById("info").innerText =
-            " Evacuated! Time: " + time + "s";
+            "Evacuated! Time: " + time + "s";
 
             alarm.stop();
         }
 
-        // STEP 5: Lose condition (hazard interaction)
+        // Lose condition
         if (!gameEnded &&
             camera.position.subtract(fire.position).length() < 1.5) {
 
             gameEnded = true;
 
             document.getElementById("info").innerText =
-            " Caught by fire!";
+            "Caught by fire!";
 
             alarm.stop();
         }
@@ -175,5 +190,4 @@ createScene().then((scene) => {
     window.addEventListener("resize", function () {
         engine.resize();
     });
-
 });

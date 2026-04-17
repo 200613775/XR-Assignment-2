@@ -69,13 +69,23 @@ const createScene = async function () {
     wall3.position.set(10, 2.5, 0);
     wall3.material = wallMat;
 
-    // Exit door
+    // Exit door 
     const exitDoor = BABYLON.MeshBuilder.CreateBox("exitDoor",
         { width: 3, height: 4, depth: 0.5 }, scene);
     exitDoor.position.set(0, 2, -9.5);
 
-    // EXIT TEXT
-    const exitTexture = new BABYLON.DynamicTexture("exitTexture", {width:512, height:256}, scene);
+    const doorMat = new BABYLON.StandardMaterial("doorMat", scene);
+    doorMat.emissiveColor = new BABYLON.Color3(1, 0, 0);
+    exitDoor.material = doorMat;
+
+    // -----------------------------
+    // EXIT SIGN
+    // -----------------------------
+    const exitTexture = new BABYLON.DynamicTexture(
+        "exitTexture",
+        { width: 512, height: 256 },
+        scene
+    );
 
     exitTexture.drawText(
         "EXIT",
@@ -89,12 +99,17 @@ const createScene = async function () {
 
     const exitMat = new BABYLON.StandardMaterial("exitMat", scene);
     exitMat.diffuseTexture = exitTexture;
-
-    // FIX: make text visible (glow)
     exitMat.emissiveTexture = exitTexture;
-    exitMat.diffuseTexture.vScale = -1;
 
-    exitDoor.material = exitMat;
+    // Plane for text
+    const exitSign = BABYLON.MeshBuilder.CreatePlane(
+        "exitSign",
+        { width: 3, height: 1.5 },
+        scene
+    );
+
+    exitSign.position = new BABYLON.Vector3(0, 3, -9.2);
+    exitSign.material = exitMat;
 
     // -----------------------------
     // ARROW 1 
@@ -114,7 +129,7 @@ const createScene = async function () {
     arrow1.material = arrowMat;
 
     // -----------------------------
-    // ARROW 2
+    // ARROW 2 
     // -----------------------------
     const arrow2 = arrow1.clone("arrow2");
 

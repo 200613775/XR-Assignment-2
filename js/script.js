@@ -103,7 +103,7 @@ const createScene = async function () {
 
     arrow1.position = new BABYLON.Vector3(-8, 3, 2);
     arrow1.rotation.z = Math.PI / 2;
-    arrow1.rotation.y = Math.PI / 2;
+    arrow1.rotation.y = 0;
 
     const arrowMat = new BABYLON.StandardMaterial("arrowMat", scene);
     arrowMat.emissiveColor = new BABYLON.Color3(0, 1, 0);

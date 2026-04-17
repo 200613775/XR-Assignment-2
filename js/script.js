@@ -1,5 +1,4 @@
-
-// Get the element 
+// Get the element
 const canvas = document.getElementById("renderCanvas");
 
 // Create the engine
@@ -24,9 +23,10 @@ const createScene = async function () {
         new BABYLON.Vector3(0, 2, 8),
         scene
     );
-
     camera.attachControl(canvas, true);
     camera.speed = 0.5;
+
+    // Look toward center
     camera.setTarget(new BABYLON.Vector3(0, 2, 0));
 
     // Light
@@ -76,13 +76,9 @@ const createScene = async function () {
     doorMat.emissiveColor = new BABYLON.Color3(1, 0, 0);
     exitDoor.material = doorMat;
 
-    // Arrow
-    const arrow = BABYLON.MeshBuilder.CreateCylinder(
-        "arrow",
-        { diameterTop: 0, diameterBottom: 0.6, height: 2 },
-        scene
-    );
-
+    // Direction arrow
+    const arrow = BABYLON.MeshBuilder.CreateCylinder("arrow",
+        { diameterTop: 0, diameterBottom: 0.6, height: 2 }, scene);
     arrow.rotation.z = Math.PI / 2;
     arrow.position = new BABYLON.Vector3(0, 3, -5);
 
@@ -90,17 +86,19 @@ const createScene = async function () {
     arrowMat.emissiveColor = new BABYLON.Color3(0, 1, 0);
     arrow.material = arrowMat;
 
-    // Fire
+    // -----------------------------
+    // STEP 5: Hazard (Fire)
+    // -----------------------------
+
     const fire = BABYLON.MeshBuilder.CreateSphere("fire",
         { diameter: 1 }, scene);
-
     fire.position = new BABYLON.Vector3(2, 1, -2);
 
     const fireMat = new BABYLON.StandardMaterial("fireMat", scene);
     fireMat.emissiveColor = new BABYLON.Color3(1, 0.3, 0);
     fire.material = fireMat;
 
-    // Alarm
+    // Alarm sound
     const alarm = new BABYLON.Sound(
         "alarm",
         "sounds/alarm.mp3",
@@ -109,65 +107,60 @@ const createScene = async function () {
         { loop: true, autoplay: false, volume: 0.5 }
     );
 
-    // Safe DOM check 
-    const info = document.getElementById("info");
-
+    // Click to enable sound
     window.addEventListener("click", function () {
         if (emergency && !gameEnded) {
             alarm.play();
         }
     });
 
+    // Emergency trigger
     setTimeout(() => {
         emergency = true;
 
-        if (info) {
-            info.innerText = "🚨 EMERGENCY! FIND THE EXIT!";
-        }
-
+        document.getElementById("info").innerText =
+        "🚨 EMERGENCY! FIND THE EXIT!";
     }, 3000);
 
+    // Game loop
     scene.registerBeforeRender(() => {
 
+        // Red flashing effect
         if (emergency && !gameEnded) {
             let t = Math.sin(Date.now() * 0.01);
             scene.clearColor = new BABYLON.Color4(0.5 + t * 0.5, 0, 0, 1);
         }
 
+        // Win condition
         if (!gameEnded && camera.position.z < -9) {
             gameEnded = true;
 
             let time = ((Date.now() - startTime) / 1000).toFixed(2);
 
-            if (info) {
-                info.innerText = "Evacuated! Time: " + time + "s";
-            }
+            document.getElementById("info").innerText =
+            " Evacuated! Time: " + time + "s";
 
             alarm.stop();
         }
 
+        // STEP 5: Lose condition (hazard interaction)
         if (!gameEnded &&
             camera.position.subtract(fire.position).length() < 1.5) {
 
             gameEnded = true;
 
-            if (info) {
-                info.innerText = "Caught by fire!";
-            }
+            document.getElementById("info").innerText =
+            " Caught by fire!";
 
             alarm.stop();
         }
 
     });
 
-    // SAFE XR 
-    try {
-        await scene.createDefaultXRExperienceAsync({
-            floorMeshes: [ground]
-        });
-    } catch (e) {
-        console.log("XR not supported:", e);
-    }
+    // XR
+    await scene.createDefaultXRExperienceAsync({
+        floorMeshes: [ground]
+    });
 
     return scene;
 };

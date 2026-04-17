@@ -89,11 +89,15 @@ const createScene = async function () {
 
     const exitMat = new BABYLON.StandardMaterial("exitMat", scene);
     exitMat.diffuseTexture = exitTexture;
+
+    // FIX: make text visible (glow)
+    exitMat.emissiveTexture = exitTexture;
     exitMat.diffuseTexture.vScale = -1;
+
     exitDoor.material = exitMat;
 
     // -----------------------------
-    // ARROW 1 AT THE SIDE WALL
+    // ARROW 1 
     // -----------------------------
     const arrow1 = BABYLON.MeshBuilder.CreateCylinder(
         "arrow1",
@@ -101,20 +105,22 @@ const createScene = async function () {
         scene
     );
 
-    arrow1.position = new BABYLON.Vector3(-8, 3, 2);
-    arrow1.rotation.y = Math.PI;
+    arrow1.position = new BABYLON.Vector3(-9.5, 3, 3);
+    arrow1.rotation.z = Math.PI / 2;
+    arrow1.rotation.y = Math.PI / 2;
 
     const arrowMat = new BABYLON.StandardMaterial("arrowMat", scene);
     arrowMat.emissiveColor = new BABYLON.Color3(0, 1, 0);
     arrow1.material = arrowMat;
 
     // -----------------------------
-    // ARROW 2 AT THE MIDDLE PATH
+    // ARROW 2
     // -----------------------------
     const arrow2 = arrow1.clone("arrow2");
-    arrow2.position = new BABYLON.Vector3(0, 3, -2);
+
+    arrow2.position = new BABYLON.Vector3(-9.5, 3, -4);
     arrow2.rotation.z = Math.PI / 2;
-    arrow2.rotation.y = 0;
+    arrow2.rotation.y = -Math.PI / 2;
 
     // Fire hazard
     const fire = BABYLON.MeshBuilder.CreateSphere("fire",

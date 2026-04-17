@@ -74,18 +74,14 @@ const createScene = async function () {
         { width: 3, height: 4, depth: 0.5 }, scene);
     exitDoor.position.set(0, 2, -9.5);
 
-    const doorMat = new BABYLON.StandardMaterial("doorMat", scene);
-    doorMat.emissiveColor = new BABYLON.Color3(1, 0, 0);
-    exitDoor.material = doorMat;
-
-    // Create EXIT text on door
+    // EXIT TEXT
     const exitTexture = new BABYLON.DynamicTexture("exitTexture", {width:512, height:256}, scene);
 
     exitTexture.drawText(
         "EXIT",
-        150,
-        180,
-        "bold 80px Arial",
+        120,
+        160,
+        "bold 100px Arial",
         "white",
         "red",
         true
@@ -93,23 +89,32 @@ const createScene = async function () {
 
     const exitMat = new BABYLON.StandardMaterial("exitMat", scene);
     exitMat.diffuseTexture = exitTexture;
-
-    // Apply to door
+    exitMat.diffuseTexture.vScale = -1;
     exitDoor.material = exitMat;
 
-    // Direction arrow
-    const arrow = BABYLON.MeshBuilder.CreateCylinder(
-        "arrow",
+    // -----------------------------
+    // ARROW 1 AT THE SIDE WALL
+    // -----------------------------
+    const arrow1 = BABYLON.MeshBuilder.CreateCylinder(
+        "arrow1",
         { diameterTop: 0, diameterBottom: 0.6, height: 2 },
         scene
     );
 
-    arrow.rotation.z = Math.PI / 2;
-    arrow.position = new BABYLON.Vector3(0, 3, 2);
+    arrow1.position = new BABYLON.Vector3(-8, 3, 2);
+    arrow1.rotation.z = Math.PI / 2;
+    arrow1.rotation.y = Math.PI / 2;
 
     const arrowMat = new BABYLON.StandardMaterial("arrowMat", scene);
     arrowMat.emissiveColor = new BABYLON.Color3(0, 1, 0);
-    arrow.material = arrowMat;
+    arrow1.material = arrowMat;
+
+    // -----------------------------
+    // ARROW 2 AT THE MIDDLE PATH
+    // -----------------------------
+    const arrow2 = arrow1.clone("arrow2");
+    arrow2.position = new BABYLON.Vector3(0, 3, -2);
+    arrow2.rotation.y = Math.PI;
 
     // Fire hazard
     const fire = BABYLON.MeshBuilder.CreateSphere("fire",
@@ -150,13 +155,11 @@ const createScene = async function () {
     // Game loop
     scene.registerBeforeRender(() => {
 
-        // Red flashing effect
         if (emergency && !gameEnded) {
             let t = Math.sin(Date.now() * 0.01);
             scene.clearColor = new BABYLON.Color4(0.5 + t * 0.5, 0, 0, 1);
         }
 
-        // Win condition
         if (!gameEnded && camera.position.z < -9) {
             gameEnded = true;
 
@@ -169,7 +172,6 @@ const createScene = async function () {
             alarm.stop();
         }
 
-        // Lose condition
         if (!gameEnded &&
             camera.position.subtract(fire.position).length() < 1.5) {
 

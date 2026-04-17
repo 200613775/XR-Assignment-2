@@ -1,4 +1,4 @@
-// Get the element
+// Get the element 
 const canvas = document.getElementById("renderCanvas");
 
 // Create the engine
@@ -76,31 +76,18 @@ const createScene = async function () {
     doorMat.emissiveColor = new BABYLON.Color3(1, 0, 0);
     exitDoor.material = doorMat;
 
-    // Direction arrow
-    const arrow = BABYLON.MeshBuilder.CreateCylinder("arrow",
-        { 
-        diameterTop: 0, 
-        diameterBottom: 0.6, 
-        height: 2 }, 
-        scene);
+    // Direction arrow (FIXED - ONLY ONCE)
+    const arrow = BABYLON.MeshBuilder.CreateCylinder(
+        "arrow",
+        { diameterTop: 0, diameterBottom: 0.6, height: 2 },
+        scene
+    );
+
     arrow.rotation.z = Math.PI / 2;
     arrow.position = new BABYLON.Vector3(0, 3, -5);
 
     const arrowMat = new BABYLON.StandardMaterial("arrowMat", scene);
     arrowMat.emissiveColor = new BABYLON.Color3(0, 1, 0);
-    arrow.material = arrowMat;
-
-    const arrow = BABYLON.MeshBuilder.CreateCylinder("arrow",{
-    diameterTop:0,
-    diameterBottom:0.6,
-    height:2
-    },scene);
-
-    arrow.rotation.z = Math.PI/2;
-    arrow.position = new BABYLON.Vector3(0,3,-5);
-
-    const arrowMat = new BABYLON.StandardMaterial("arrowMat",scene);
-    arrowMat.emissiveColor = new BABYLON.Color3(0,1,0);
     arrow.material = arrowMat;
 
     // -----------------------------

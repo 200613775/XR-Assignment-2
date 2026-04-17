@@ -102,8 +102,7 @@ const createScene = async function () {
     );
 
     arrow1.position = new BABYLON.Vector3(-8, 3, 2);
-    arrow1.rotation.z = Math.PI / 2;
-    arrow1.rotation.y = 0;
+    arrow1.rotation.y = Math.PI;
 
     const arrowMat = new BABYLON.StandardMaterial("arrowMat", scene);
     arrowMat.emissiveColor = new BABYLON.Color3(0, 1, 0);
@@ -114,7 +113,8 @@ const createScene = async function () {
     // -----------------------------
     const arrow2 = arrow1.clone("arrow2");
     arrow2.position = new BABYLON.Vector3(0, 3, -2);
-    arrow2.rotation.y = Math.PI;
+    arrow2.rotation.z = Math.PI / 2;
+    arrow2.rotation.y = 0;
 
     // Fire hazard
     const fire = BABYLON.MeshBuilder.CreateSphere("fire",

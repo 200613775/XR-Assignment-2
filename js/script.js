@@ -9,14 +9,13 @@ const canvas = document.getElementById("renderCanvas");
         const scene = new BABYLON.Scene(engine);
 
         // Create a camera
-        const camera = new BABYLON.ArcRotateCamera(
+        const camera = new BABYLON.UniversalCamera(
         "camera",
-        -Math.PI / 2,
-        Math.PI / 2.5,
-        15,
-        new BABYLON.Vector3(0,0,0)
-     );
+        new BABYLON.Vector3(0,2,5),
+        scene
+        );
         camera.attachControl(canvas,true);
+        camera.speed = 0.5;
 
         // lighting
         const light = new BABYLON.HemisphericLight(
@@ -90,11 +89,27 @@ const canvas = document.getElementById("renderCanvas");
         doorMat.emissiveColor = new BABYLON.Color3(1,0,0);
         exitDoor.material = doorMat;
 
+        // alert msg
+        let emergency = false;
+
+        setTimeout(()=>{
+            emergency = true;
+            document.getElementById("info").innerText = "🚨 EMERGENCY! FIND THE EXIT!";
+        },3000);
+
         // XR Helper
         const xr = await scene.createDefaultXRExperienceAsync({ 
          floorMeshes: [ground],
          optionalFeatures: true
         });
+
+        scene.registerBeforeRender(()=>{
+            if(emergency){
+                let t = Math.sin(Date.now()*0.01);
+                scene.clearColor = new BABYLON.Color4(0.5+t*0.5,0,0,1);
+            }
+
+});
 
 return scene;
 };

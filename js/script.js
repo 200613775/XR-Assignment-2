@@ -1,4 +1,4 @@
-// Get the element
+// Get the element 
 const canvas = document.getElementById("renderCanvas");
 
 // Create the engine
@@ -12,21 +12,23 @@ const createScene = async function () {
     // Background color
     scene.clearColor = new BABYLON.Color4(0.8, 0.9, 1, 1);
 
+    // UI reference
+    const info = document.getElementById("info");
+
     // Game variables
     let startTime = Date.now();
     let gameEnded = false;
     let emergency = false;
 
-    // Camera (first-person)
+    // Camera 
     const camera = new BABYLON.UniversalCamera(
         "camera",
         new BABYLON.Vector3(0, 2, 8),
         scene
     );
+
     camera.attachControl(canvas, true);
     camera.speed = 0.5;
-
-    // Look toward center
     camera.setTarget(new BABYLON.Vector3(0, 2, 0));
 
     // Light
@@ -77,10 +79,12 @@ const createScene = async function () {
     exitDoor.material = doorMat;
 
     // Direction arrow
-    const arrow = BABYLON.MeshBuilder.CreateCylinder("arrow",
-        { diameterTop: 0, 
-          diameterBottom: 0.6, 
-          height: 2 }, scene);
+    const arrow = BABYLON.MeshBuilder.CreateCylinder(
+        "arrow",
+        { diameterTop: 0, diameterBottom: 0.6, height: 2 },
+        scene
+    );
+
     arrow.rotation.z = Math.PI / 2;
     arrow.position = new BABYLON.Vector3(0, 3, -5);
 
@@ -88,25 +92,10 @@ const createScene = async function () {
     arrowMat.emissiveColor = new BABYLON.Color3(0, 1, 0);
     arrow.material = arrowMat;
 
-    const arrow = BABYLON.MeshBuilder.CreateCylinder("arrow",{
-    diameterTop:0,
-    diameterBottom:0.6,
-    height:2
-    },scene);
-
-    arrow.rotation.z = Math.PI/2;
-    arrow.position = new BABYLON.Vector3(0,3,-5);
-
-    const arrowMat = new BABYLON.StandardMaterial("arrowMat",scene);
-    arrowMat.emissiveColor = new BABYLON.Color3(0,1,0);
-    arrow.material = arrowMat;
-
-    // -----------------------------
-    // Hazard (Fire)
-    // -----------------------------
-
+    // Fire hazard
     const fire = BABYLON.MeshBuilder.CreateSphere("fire",
         { diameter: 1 }, scene);
+
     fire.position = new BABYLON.Vector3(2, 1, -2);
 
     const fireMat = new BABYLON.StandardMaterial("fireMat", scene);
@@ -122,7 +111,7 @@ const createScene = async function () {
         { loop: true, autoplay: false, volume: 0.5 }
     );
 
-    // Click to enable sound
+    // Enable sound on click
     window.addEventListener("click", function () {
         if (emergency && !gameEnded) {
             alarm.play();
@@ -133,8 +122,10 @@ const createScene = async function () {
     setTimeout(() => {
         emergency = true;
 
-        document.getElementById("info").innerText =
-        "🚨 EMERGENCY! FIND THE EXIT!";
+        if (info) {
+            info.innerText = "🚨 EMERGENCY! FIND THE EXIT!";
+        }
+
     }, 3000);
 
     // Game loop
@@ -152,8 +143,9 @@ const createScene = async function () {
 
             let time = ((Date.now() - startTime) / 1000).toFixed(2);
 
-            document.getElementById("info").innerText =
-            "Evacuated! Time: " + time + "s";
+            if (info) {
+                info.innerText = "Evacuated! Time: " + time + "s";
+            }
 
             alarm.stop();
         }
@@ -164,18 +156,23 @@ const createScene = async function () {
 
             gameEnded = true;
 
-            document.getElementById("info").innerText =
-            "Caught by fire!";
+            if (info) {
+                info.innerText = "Caught by fire!";
+            }
 
             alarm.stop();
         }
 
     });
 
-    // XR
-    await scene.createDefaultXRExperienceAsync({
-        floorMeshes: [ground]
-    });
+    // XR 
+    try {
+        await scene.createDefaultXRExperienceAsync({
+            floorMeshes: [ground]
+        });
+    } catch (e) {
+        console.log("XR not supported:", e);
+    }
 
     return scene;
 };
@@ -190,4 +187,5 @@ createScene().then((scene) => {
     window.addEventListener("resize", function () {
         engine.resize();
     });
+
 });

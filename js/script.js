@@ -198,7 +198,9 @@ const createScene = async function () {
         }
 
         // LOSE (fire)
-        if (camera.position.subtract(fire.position).length() < 1.5) {
+    let distance = BABYLON.Vector3.Distance(camera.position, fire.position);
+
+        if (distance < 2) {
             gameEnded = true;
 
             if (info) {

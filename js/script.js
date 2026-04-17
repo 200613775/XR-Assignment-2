@@ -78,9 +78,7 @@ const createScene = async function () {
     doorMat.emissiveColor = new BABYLON.Color3(1, 0, 0);
     exitDoor.material = doorMat;
 
-    // -----------------------------
-    //  EXIT SIGN
-    // -----------------------------
+    // EXIT SIGN
     const exitTexture = new BABYLON.DynamicTexture(
         "exitTexture",
         { width: 512, height: 256 },
@@ -115,9 +113,7 @@ const createScene = async function () {
     exitSign.rotation.y = Math.PI;
     exitSign.material = exitMat;
 
-    // -----------------------------
-    // ARROW 1 
-    // -----------------------------
+    // ARROWS
     const arrow1 = BABYLON.MeshBuilder.CreateCylinder(
         "arrow1",
         { diameterTop: 0, diameterBottom: 0.6, height: 2 },
@@ -132,13 +128,8 @@ const createScene = async function () {
     arrowMat.emissiveColor = new BABYLON.Color3(0, 1, 0);
     arrow1.material = arrowMat;
 
-    // -----------------------------
-    // ARROW 2 
-    // -----------------------------
     const arrow2 = arrow1.clone("arrow2");
-
     arrow2.position = new BABYLON.Vector3(-9.5, 3, -4);
-    arrow2.rotation.z = Math.PI / 2;
     arrow2.rotation.y = -Math.PI / 2;
 
     // Fire hazard
@@ -176,15 +167,23 @@ const createScene = async function () {
 
     }, 3000);
 
-    // Game loop
+    //  FIXED GAME LOOP
     scene.registerBeforeRender(() => {
 
-        if (emergency && !gameEnded) {
+        // STOP everything if game ended
+        if (gameEnded) {
+            scene.clearColor = new BABYLON.Color4(0.8, 0.9, 1, 1);
+            return;
+        }
+
+        // Red flashing
+        if (emergency) {
             let t = Math.sin(Date.now() * 0.01);
             scene.clearColor = new BABYLON.Color4(0.5 + t * 0.5, 0, 0, 1);
         }
 
-        if (!gameEnded && camera.position.z < -9) {
+        // WIN
+        if (camera.position.z < -9) {
             gameEnded = true;
 
             let time = ((Date.now() - startTime) / 1000).toFixed(2);
@@ -194,11 +193,12 @@ const createScene = async function () {
             }
 
             alarm.stop();
+            camera.detachControl(canvas);
+            return;
         }
 
-        if (!gameEnded &&
-            camera.position.subtract(fire.position).length() < 1.5) {
-
+        // LOSE (fire)
+        if (camera.position.subtract(fire.position).length() < 1.5) {
             gameEnded = true;
 
             if (info) {
@@ -206,6 +206,8 @@ const createScene = async function () {
             }
 
             alarm.stop();
+            camera.detachControl(canvas);
+            return;
         }
 
     });

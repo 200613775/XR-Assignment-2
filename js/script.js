@@ -69,7 +69,7 @@ const createScene = async function () {
     wall3.position.set(10, 2.5, 0);
     wall3.material = wallMat;
 
-    // Exit door 
+    // Exit door
     const exitDoor = BABYLON.MeshBuilder.CreateBox("exitDoor",
         { width: 3, height: 4, depth: 0.5 }, scene);
     exitDoor.position.set(0, 2, -9.5);
@@ -79,19 +79,22 @@ const createScene = async function () {
     exitDoor.material = doorMat;
 
     // -----------------------------
-    // EXIT SIGN
+    //  EXIT SIGN
     // -----------------------------
     const exitTexture = new BABYLON.DynamicTexture(
         "exitTexture",
         { width: 512, height: 256 },
-        scene
+        scene,
+        false
     );
+
+    exitTexture.hasAlpha = true;
 
     exitTexture.drawText(
         "EXIT",
-        120,
-        160,
-        "bold 100px Arial",
+        null,
+        180,
+        "bold 120px Arial",
         "white",
         "red",
         true
@@ -100,15 +103,16 @@ const createScene = async function () {
     const exitMat = new BABYLON.StandardMaterial("exitMat", scene);
     exitMat.diffuseTexture = exitTexture;
     exitMat.emissiveTexture = exitTexture;
+    exitMat.backFaceCulling = false;
 
-    // Plane for text
     const exitSign = BABYLON.MeshBuilder.CreatePlane(
         "exitSign",
-        { width: 3, height: 1.5 },
+        { width: 4, height: 2 },
         scene
     );
 
-    exitSign.position = new BABYLON.Vector3(0, 3, -9.2);
+    exitSign.position = new BABYLON.Vector3(0, 3, -9.0);
+    exitSign.rotation.y = Math.PI;
     exitSign.material = exitMat;
 
     // -----------------------------
@@ -156,7 +160,6 @@ const createScene = async function () {
         { loop: true, autoplay: false, volume: 0.5 }
     );
 
-    // Enable sound on click
     window.addEventListener("click", function () {
         if (emergency && !gameEnded) {
             alarm.play();

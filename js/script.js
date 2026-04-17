@@ -9,18 +9,19 @@ const createScene = async function () {
 
     const scene = new BABYLON.Scene(engine);
 
+    // ✅ Enable collisions
+    scene.collisionsEnabled = true;
+
     // Background color
     scene.clearColor = new BABYLON.Color4(0.8, 0.9, 1, 1);
 
-    // UI reference
     const info = document.getElementById("info");
 
-    // Game variables
     let startTime = Date.now();
     let gameEnded = false;
     let emergency = false;
 
-    // Camera 
+    // Camera
     const camera = new BABYLON.UniversalCamera(
         "camera",
         new BABYLON.Vector3(0, 2, 8),
@@ -30,6 +31,11 @@ const createScene = async function () {
     camera.attachControl(canvas, true);
     camera.speed = 0.5;
     camera.setTarget(new BABYLON.Vector3(0, 2, 0));
+
+    // ✅ Camera collision settings
+    camera.checkCollisions = true;
+    camera.applyGravity = true;
+    camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
 
     // Light
     const light = new BABYLON.HemisphericLight(
@@ -45,6 +51,8 @@ const createScene = async function () {
         scene
     );
 
+    ground.checkCollisions = true;
+
     const groundMat = new BABYLON.StandardMaterial("groundMat", scene);
     groundMat.diffuseColor = new BABYLON.Color3(0.6, 0.6, 0.6);
     ground.material = groundMat;
@@ -58,16 +66,19 @@ const createScene = async function () {
         { width: 20, height: 5, depth: 0.5 }, scene);
     wall1.position.set(0, 2.5, -10);
     wall1.material = wallMat;
+    wall1.checkCollisions = true;
 
     const wall2 = BABYLON.MeshBuilder.CreateBox("wall2",
         { width: 0.5, height: 5, depth: 20 }, scene);
     wall2.position.set(-10, 2.5, 0);
     wall2.material = wallMat;
+    wall2.checkCollisions = true;
 
     const wall3 = BABYLON.MeshBuilder.CreateBox("wall3",
         { width: 0.5, height: 5, depth: 20 }, scene);
     wall3.position.set(10, 2.5, 0);
     wall3.material = wallMat;
+    wall3.checkCollisions = true;
 
     // Exit door
     const exitDoor = BABYLON.MeshBuilder.CreateBox("exitDoor",
@@ -113,7 +124,7 @@ const createScene = async function () {
     exitSign.rotation.y = Math.PI;
     exitSign.material = exitMat;
 
-    // ARROWS
+    // Arrows
     const arrow1 = BABYLON.MeshBuilder.CreateCylinder(
         "arrow1",
         { diameterTop: 0, diameterBottom: 0.6, height: 2 },
@@ -132,11 +143,12 @@ const createScene = async function () {
     arrow2.position = new BABYLON.Vector3(-9.5, 3, -4);
     arrow2.rotation.y = -Math.PI / 2;
 
-    // Fire hazard
+    // 🔥 Fire hazard (FIXED)
     const fire = BABYLON.MeshBuilder.CreateSphere("fire",
         { diameter: 1 }, scene);
 
     fire.position = new BABYLON.Vector3(2, 1, -2);
+    fire.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5); // easier hit
 
     const fireMat = new BABYLON.StandardMaterial("fireMat", scene);
     fireMat.emissiveColor = new BABYLON.Color3(1, 0.3, 0);
@@ -167,16 +179,14 @@ const createScene = async function () {
 
     }, 3000);
 
-    //  FIXED GAME LOOP
+    // FINAL GAME LOOP 
     scene.registerBeforeRender(() => {
 
-        // STOP everything if game ended
         if (gameEnded) {
             scene.clearColor = new BABYLON.Color4(0.8, 0.9, 1, 1);
             return;
         }
 
-        // Red flashing
         if (emergency) {
             let t = Math.sin(Date.now() * 0.01);
             scene.clearColor = new BABYLON.Color4(0.5 + t * 0.5, 0, 0, 1);
@@ -197,8 +207,8 @@ const createScene = async function () {
             return;
         }
 
-        // LOSE (fire)
-        if (camera.position.subtract(fire.position).length() < 1.5) {
+        // 🔥 LOSE (REAL COLLISION)
+        if (camera.intersectsMesh(fire, false)) {
             gameEnded = true;
 
             if (info) {

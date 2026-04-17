@@ -78,6 +78,25 @@ const createScene = async function () {
     doorMat.emissiveColor = new BABYLON.Color3(1, 0, 0);
     exitDoor.material = doorMat;
 
+    // Create EXIT text on door
+    const exitTexture = new BABYLON.DynamicTexture("exitTexture", {width:512, height:256}, scene);
+
+    exitTexture.drawText(
+        "EXIT",
+        150,
+        180,
+        "bold 80px Arial",
+        "white",
+        "red",
+        true
+    );
+
+    const exitMat = new BABYLON.StandardMaterial("exitMat", scene);
+    exitMat.diffuseTexture = exitTexture;
+
+    // Apply to door
+    exitDoor.material = exitMat;
+
     // Direction arrow
     const arrow = BABYLON.MeshBuilder.CreateCylinder(
         "arrow",
@@ -86,7 +105,7 @@ const createScene = async function () {
     );
 
     arrow.rotation.z = Math.PI / 2;
-    arrow.position = new BABYLON.Vector3(0, 3, -5);
+    arrow.position = new BABYLON.Vector3(0, 3, 2);
 
     const arrowMat = new BABYLON.StandardMaterial("arrowMat", scene);
     arrowMat.emissiveColor = new BABYLON.Color3(0, 1, 0);
